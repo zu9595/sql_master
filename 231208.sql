@@ -151,3 +151,107 @@ select upper(last_name) name, length(last_name) "name_length"
 from employees
 where substr(last_name, 1, 1) in ('J', 'A', 'M')
 order by 1;
+
+select sysdate
+from dual;
+
+select last_name, (sysdate-hire_date) /7 "WEEKS"
+from employees
+where department_id = 90;
+
+select employee_id, hire_date, months_between(sysdate, hire_date) "TENURE",
+    add_months(hire_date, 6) "REVIEW",
+    next_day(hire_date, '금'),
+    last_day(hire_date)
+from employees;
+
+select  round(sysdate, 'YEAR'),
+        round(sysdate, 'MONTH'),
+        round(sysdate, 'DAY'),
+        round(sysdate, 'DD')
+from dual;
+
+select  trunc(sysdate, 'YEAR'),
+        trunc(sysdate, 'MONTH'),
+        trunc(sysdate, 'DAY'),
+        trunc(sysdate, 'DD')
+from dual;
+
+select *
+from employees
+where employee_id = '101';
+
+alter session set
+nls_date_language = american;
+
+select employee_id, to_char(hire_date, 'MM/YY') "Month_Hired"
+from employees;
+
+select last_name, to_char(hire_date, 'fmDD MONTH YYYY') "HireDate"
+from employees;
+
+select last_name, to_char(hire_date, 'fmDdspth "of" Month YYYY fmHH:MI:SS AM')
+from employees;
+
+select to_char(salary, '$99,999.00') "SALARY"
+from employees;
+
+select to_number('$3,400', '$99,999')
+from dual;
+
+select to_date('2010년, 02월', 'yyyy"년", MM"월"')
+from dual;
+
+select last_name, hire_date
+from employees
+where hire_date>
+to_date('2005년 07월 01일', 'YYYY"년" MM"월" DD"일"');
+
+select last_name, hire_date
+from employees
+where hire_date>
+to_date('05/07/01', 'YY-MM-DD');
+
+select last_name, salary, nvl(commission_pct, 0),
+(salary*12) +(salary*12*nvl(commission_pct,0)) "AN_SAL"
+from employees;
+
+select last_name, salary, nvl(to_char(commission_pct), '보너스 없음')
+from employees;
+
+select last_name, salary, nvl2(commission_pct, 'SAL+COM', 'SAL') "income"
+from employees;
+
+select first_name, length(first_name) "expr1", last_name, length(last_name) "expr2", nullif(length(first_name), length(last_name)) result
+from employees;
+
+select last_name, job_id, salary,
+        case job_id when 'IT_PROG'  THEN 1.10*salary
+                    when 'ST_CLERK' THEN 1.15*salary
+                    when 'SA_REP'   THEN 1.20*salary
+                    else salary
+        end "REVISED_SALARY"
+from employees;
+
+SELECT last_name, salary,
+       CASE WHEN salary<5000   THEN 'Low'
+            WHEN salary<10000  THEN 'Medium'
+            WHEN salary<20000  THEN 'Good'
+            else job_id
+            end "SALARY_JOB"
+from employees;
+
+select last_name, job_id, salary,
+        decode(job_id, 'IT_PROG',   1.10*salary,
+                        'ST_CLERK', 1.15*salary,
+                        'SA_REP',   1.20*salary,
+                                    salary)
+        REVISED_SALARY
+from employees;
+--5
+select last_name, round((sysdate - hire_date)/12,0) months_worked
+from employees;
+--6
+select first_name, to_char(salary, '000000000099999') salary
+from employees;
+--7
