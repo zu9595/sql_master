@@ -65,6 +65,7 @@ from employees;
 select distinct department_id, job_id
 from employees;
 
+--desc, select, from, "", '', ||,
 --1
 desc departments;
 select *
@@ -180,6 +181,7 @@ where job_id = 'SA_REP'
 or job_id = 'AD_PRES'
 and salary > 15000;
 
+--where like, in, between, is null
 --1
 select last_name, salary
 from employees
@@ -197,10 +199,19 @@ select last_name "Employee", salary "Monthly Salary"
 from employees
 where salary between 5000 and 12000
 and (department_id = 20 or department_id = 50);
+
+select last_name "Employee", salary "Monthly Salary"
+from employees
+where salary between 5000 and 12000
+and department_id in (20, 50);
 --5
 select last_name, hire_date
 from employees
-where hire_date like '14%';
+where hire_date like '05%';
+
+select last_name, hire_date
+from employees
+where hire_date between '05/01/01' and '05/12/31';
 --6
 select last_name, job_id
 from employees
@@ -222,3 +233,7 @@ and not salary in(2500, 3500, 7000);
 select last_name, salary, commission_pct
 from employees
 where commission_pct*100 = 20;
+
+select last_name, salary, commission_pct
+from employees
+where commission_pct = 0.2;
