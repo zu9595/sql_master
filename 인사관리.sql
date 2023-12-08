@@ -4,7 +4,7 @@ from tab;
 select *
 from Employees;
 
-desc employees;
+desc employees; --테이블 조회
 
 desc departments;
 
@@ -185,7 +185,7 @@ and salary > 15000;
 --1
 select last_name, salary
 from employees
-where salary > 12000;
+where salary > 12000; --조건확인
 --2
 select last_name, department_id
 from employees
@@ -193,21 +193,21 @@ where employee_id = 176;
 --3
 select last_name, salary
 from employees
-where not salary between 5000 and 12000;
+where not salary between 5000 and 12000; --between x and x : 사이값 일 경우
 --4
 select last_name "Employee", salary "Monthly Salary"
 from employees
 where salary between 5000 and 12000
-and (department_id = 20 or department_id = 50);
+and (department_id = 20 or department_id = 50); --괄호로 묶어서 우선순위 변경
 
 select last_name "Employee", salary "Monthly Salary"
 from employees
 where salary between 5000 and 12000
-and department_id in (20, 50);
+and department_id in (20, 50); --in : 각 인수값마다 or로 확인
 --5
 select last_name, hire_date
 from employees
-where hire_date like '05%';
+where hire_date like '05%'; --like 'x%' : 문자열 확인, %는 문자가 존재함을 나타냄
 
 select last_name, hire_date
 from employees
@@ -228,7 +228,7 @@ where last_name like '%a%' and last_name like '%e%';
 select last_name, job_id, salary
 from employees
 where job_id in('SA_REP', 'ST_CLERK')
-and not salary in(2500, 3500, 7000);
+And Not Salary In(2500, 3500, 7000);
 --10
 select last_name, salary, commission_pct
 from employees
