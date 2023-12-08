@@ -92,5 +92,62 @@ from employees;
 select sysdate
 from dual;
 
-select 'The job id for ' ||upper(last_name)||' is '||lower(job_id) as "EMPLOYEE DETAILS" --대문자 소문자 출력
+select 'The job id for ' ||upper(last_name)||' is '||lower(job_id) as "EMPLOYEE DETAILS" --대문자 소문자
 from employees;
+
+select employee_id, last_name, department_id
+from employees
+where lower(last_name) = 'higgins';
+
+select last_name, substr(last_name, 4)
+from employees
+where department_id = 90;
+
+select last_name, substr(last_name, 2, 2)
+from employees
+where department_id = 90;
+
+select last_name, substr(last_name, -3, 2)
+from employees
+where department_id = 90;
+
+select employee_id, concat(first_name, last_name) name, job_id, length(last_name), instr(last_name, 'a') "contains 'a'?"
+from employees
+where substr(job_id, 4) = 'REP';
+
+select ltrim('yyedaymy', 'yea')
+from dual;
+
+select rtrim('yyedaymy', 'yea')
+from dual;
+
+select  round(345.678)as round1,
+        round(345.678, 0)as round2,
+        round(345.678, 1)as round3,
+        round(345.678, -1)as round4
+from dual;
+          
+select  trunc(345.678)as trunc1,
+        trunc(345.678, 0)as trunc2,
+        trunc(345.678, 1)as trunc3,
+        trunc(345.678, -1)as trunc4
+from dual;
+          
+select last_name, salary, mod(salary, 5000)
+from employees;
+
+--1
+select sysdate "Date"
+from dual;
+--2
+select employee_id, last_name, salary, round(salary*1.15, 0) "New Salary"
+from employees;
+--3
+select employee_id, last_name, salary, round(salary*1.15, 0) "New Salary",
+round(salary*1.15)-salary "Increase"
+from employees;
+--4
+select upper(last_name) name, length(last_name) "name_length"
+from employees
+where substr(last_name, 1, 1) in ('J', 'A', 'M')
+order by 1;
