@@ -227,11 +227,16 @@ and j.job_id = e.job_id
 and l.location_id = d.location_id
 and lower(l.city) = 'toronto';
 --4
-
+select e1.last_name "Employee", e1.employee_id "Emp#", e2.last_name "Manager", e2.manager_id "Mgr#"
+from employees e1, employees e2
+where e2.employee_id = e1.manager_id;
 --5
-
+select e1.last_name "Employee", e1.employee_id "Emp#", e2.last_name "Manager", e2.manager_id "Mgr#"
+from employees e1, employees e2
+where e2.employee_id(+) = e1.manager_id
+order by 2;
 --6
-
+--select last_name, job_title, department_name, salary, 
 select last_name, salary
 from employees
 where salary in (select max(salary)
