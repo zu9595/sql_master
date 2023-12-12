@@ -244,6 +244,8 @@ where e.job_id = j.job_id
 and e.department_id = d.department_id 
 and e.salary between jg.lowest_sal and jg.highest_sal;
 
+
+--¼­ºêÄõ¸®
 select last_name, salary
 from employees
 where salary in (select max(salary)
