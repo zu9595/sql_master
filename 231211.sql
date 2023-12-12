@@ -236,7 +236,14 @@ from employees e1, employees e2
 where e2.employee_id(+) = e1.manager_id
 order by 2;
 --6
---select last_name, job_title, department_name, salary, 
+select *
+from job_grades;
+select e.last_name, j.job_title, d.department_name, e.salary, jg.grade_level
+from employees e, jobs j, departments d, job_grades jg
+where e.job_id = j.job_id 
+and e.department_id = d.department_id 
+and e.salary between jg.lowest_sal and jg.highest_sal;
+
 select last_name, salary
 from employees
 where salary in (select max(salary)
