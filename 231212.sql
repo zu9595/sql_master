@@ -161,6 +161,86 @@ select *
 from employees
 where employee_id = 176;
 
+truncate table aa;
+
 rollback;
 
+select table_name
+from user_tables;
 
+select distinct object_type
+from user_objects;
+
+select *
+from user_catalog;
+
+create table hire_dates
+            (id number(8), hire_date date default sysdate);
+
+insert into hire_dates(id)
+values(35);
+
+select *
+from hire_dates;
+
+insert into hire_dates
+values (45, null);
+
+create table dept
+            (deptno number(2),
+            dname   varchar2(14),
+            loc     varchar2(13),
+            create_date date default sysdate);
+
+DESC dept;
+
+select table_name from user_tables;
+
+create table dept80
+as
+    select employee_id, last_name,
+            salary*12 annsal,
+            hire_date
+    from employees
+    where department_id = 80;
+
+alter table dept80
+add(job_id varchar2(9));
+
+alter table dept80
+add(hdate date default sysdate);
+
+alter table dept80
+modify(last_name varchar2(30));
+
+alter table dept80
+modify(job_id number(10));
+
+alter table dept80
+modify(last_name number(10)); --기존값유형과 맞지않아서 오류
+
+alter table dept80
+drop (job_id); --열 삭제
+
+alter table dept80
+set unused(last_name);
+
+alter table dept80
+drop unused columns;
+
+drop table dept80;
+
+select object_name, original_name, type
+from user_recyclebin; --삭제된 테이블 임시 저장공간(휴지통), 오라클만 존재함
+
+flashback table dept80 to before drop; --삭제된 테이블 복구(오라클)
+
+drop table dept80 purge; --영구 삭제(오라클), 사용하지 말것
+
+purge RECYCLEBIN; --휴지통 비우기, 사용하지 말것
+
+rename dept to dept80;
+
+truncate table dept80;
+
+select * from dept80;
