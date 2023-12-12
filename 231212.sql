@@ -150,7 +150,7 @@ select * from employees;
 rollback; --작업 초기화
 
 
--- 트랜잭션 : | d,d,u,i | c |
+-- 트랜잭션 : | d,d,u,i~ | co,cr
 commit;
 
 update employees
@@ -162,3 +162,5 @@ from employees
 where employee_id = 176;
 
 rollback;
+
+
