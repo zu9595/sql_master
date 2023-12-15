@@ -45,17 +45,28 @@ book_price number default 0);
 drop table book;
 select * from book;
 
+
+--프로젝트
 create table board(
 board_no number primary key,
 board_id varchar2(20) not null,
 board_title varchar2(100) not null,
+board_inside varchar2(1000) not null,
 board_writer varchar2(20) not null,
 board_date varchar2(20) not null,
-board_joins number default 0,
-board_page number default 1);
+board_joins number default 0);
+
+create table accountinfo(
+user_id varchar2(20) primary key not null,
+user_pw varchar2(20) not null);
 
 select * from board;
+select * from inside;
+select * from accountinfo;
+
 drop table board;
+delete from board where board_no = 1;
 rollback;
-insert into board(board_no, board_id, board_title, board_writer, board_date)
-values(0, '공지사항', '게시판 이용수칙 안내', '관리자', to_date(sysdate, 'YY-MM-DD')); 
+
+insert into board(board_no, board_id, board_title, board_inside, board_writer, board_date)
+values(1, '공지사항', '게시판 이용수칙 안내', '테스트중입니다', '관리자', to_date(sysdate, 'YY-MM-DD'));
