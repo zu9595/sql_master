@@ -58,14 +58,16 @@ board_joins number default 0);
 
 create table accountinfo(
 user_id varchar2(20) primary key not null,
-user_pw varchar2(20) not null);
+user_pw varchar2(20) not null,
+user_nick varchar2(20) not null);
 
 select * from board;
-select * from inside;
 select * from accountinfo;
 
+drop table accountinfo;
 drop table board;
 delete from board where board_no = 1;
+delete from accountinfo where user_id = '회원가입';
 rollback;
 
 insert into board(board_no, board_id, board_title, board_inside, board_writer, board_date)
