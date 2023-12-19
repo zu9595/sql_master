@@ -47,6 +47,9 @@ select * from book;
 
 
 --프로젝트
+drop table accountinfo;
+drop table board;
+
 create table board(
 board_no number primary key,
 board_id varchar2(20) not null,
@@ -64,11 +67,17 @@ user_nick varchar2(20) not null);
 select * from board;
 select * from accountinfo;
 
-drop table accountinfo;
-drop table board;
+
 delete from board where board_no = 1;
-delete from accountinfo where user_id = '회원가입';
+delete accountinfo where user_id = 'abc';
 rollback;
 
+select *
+from board 
+where board_writer = '관리자'
+order by 1;
+
+insert into accountinfo
+values('abc', 1234, 'test');
 insert into board(board_no, board_id, board_title, board_inside, board_writer, board_date)
-values(1, '공지사항', '게시판 이용수칙 안내', '테스트중입니다', '관리자', to_date(sysdate, 'YY-MM-DD'));
+values(12, '공지사항', '게시판 이용수칙 안내', 'asdf', '관리자', to_date(sysdate, 'YY-MM-DD'));
