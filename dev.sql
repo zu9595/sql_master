@@ -52,23 +52,23 @@ drop table board;
 
 create table board(
 board_no number primary key,
-board_id varchar2(20) not null,
-board_title varchar2(100) not null,
-board_inside varchar2(1000) not null,
-board_writer varchar2(20) not null,
-board_date varchar2(20) not null,
+board_id varchar2(20),
+board_title varchar2(100),
+board_inside varchar2(1000),
+board_writer varchar2(20),
+board_date varchar2(20),
 board_joins number default 0);
 
 create table accountinfo(
 user_id varchar2(20) primary key not null,
-user_pw varchar2(20) not null,
-user_nick varchar2(20) not null);
+user_pw varchar2(20),
+user_nick varchar2(20));
 
 select * from board;
 select * from accountinfo;
 
 
-delete from board where board_no = 1;
+delete from board where board_no = 14;
 delete accountinfo where user_id = 'abc';
 rollback;
 
@@ -80,4 +80,31 @@ order by 1;
 insert into accountinfo
 values('abc', 1234, 'test');
 insert into board(board_no, board_id, board_title, board_inside, board_writer, board_date)
-values(12, '공지사항', '게시판 이용수칙 안내', 'asdf', '관리자', to_date(sysdate, 'YY-MM-DD'));
+values(11, '잡담', '테스트용', 'asdf', 'test', to_date(sysdate, 'YY-MM-DD'));
+
+
+--231222
+select *
+from student;
+
+select * from student
+where student_name like '%'길동'%';
+drop table board;
+create table board(
+board_no number primary key,
+title varchar2(100) not null,
+content varchar2(500) not null,
+writer varchar2 (50) not null,
+write_date date default sysdate,
+click_cnt number default 0,
+image varchar2(100)
+);
+create sequence board_seq;
+insert into board (board_no, title, writer, content)
+values(board_seq.nextval, '첫번째 글', '홍길동', 'JSP 어렵다');
+insert into board (board_no, title, writer, content)
+values(board_seq.nextval, '오늘은 금요일', '홍길동', '불코딩하자');
+insert into board (board_no, title, writer, content)
+values(board_seq.nextval, '우리반 화이팅', '최승민', '이거 왜 안돼지');
+
+select * from board order by 1;
