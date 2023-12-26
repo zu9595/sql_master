@@ -95,7 +95,7 @@ board_no number primary key,
 title varchar2(100) not null,
 content varchar2(500) not null,
 writer varchar2 (50) not null,
-write_date date default sysdate,
+writer_date date default sysdate,
 click_cnt number default 0,
 image varchar2(100)
 );
@@ -123,5 +123,3 @@ insert into member values('user2', '2222', '±èÃ¶¼ö', 'User');
 insert into member values('user3', '3333', '°ü¸®ÀÚ', 'Admin');
 commit;
 
-alter table board rename column write_date
-to writer_date;

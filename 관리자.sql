@@ -1,3 +1,17 @@
-alter user hr
-identified by hr
+alter user dev
+identified by dev
 account unlock;
+
+create user dev
+identified by test;
+
+grant create session, create table, create view
+to dev;
+
+revoke create session, create table, create view
+from dev;
+
+create user dev
+identified by dev
+default tablespace users
+temporary tablespace temp;
