@@ -108,3 +108,20 @@ insert into board (board_no, title, writer, content)
 values(board_seq.nextval, '¿ì¸®¹İ È­ÀÌÆÃ', 'ÃÖ½Â¹Î', 'ÀÌ°Å ¿Ö ¾ÈµÅÁö');
 
 select * from board order by 1;
+
+select * from member;
+drop table member;
+
+create table member(
+id varchar2(20) primary key,
+pw varchar2(10) not null,
+name varchar2(100) not null,
+responsibility varchar2(10) default 'User'); --Admin/ User
+
+insert into member values('user1', '1111', 'È«±æµ¿', 'User');
+insert into member values('user2', '2222', '±èÃ¶¼ö', 'User');
+insert into member values('user3', '3333', '°ü¸®ÀÚ', 'Admin');
+commit;
+
+alter table board rename column write_date
+to writer_date;
