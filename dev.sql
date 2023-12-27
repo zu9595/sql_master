@@ -68,7 +68,7 @@ select * from board;
 select * from accountinfo;
 
 
-delete from board where board_no = 14;
+delete from board where board_no between 11 and 16;
 delete accountinfo where user_id = 'abc';
 rollback;
 
@@ -121,5 +121,7 @@ responsibility varchar2(10) default 'User'); --Admin/ User
 insert into member values('user1', '1111', 'È«±æµ¿', 'User');
 insert into member values('user2', '2222', '±èÃ¶¼ö', 'User');
 insert into member values('user3', '3333', '°ü¸®ÀÚ', 'Admin');
+insert into member values('user4', '4444', 'ÃÖ½Â¹Î', 'User');
 commit;
-
+delete board;
+delete sequence board_seq;
