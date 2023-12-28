@@ -128,6 +128,9 @@ delete sequence board_seq;
 
 
 --231228 시험--
+delete from product where product_name like '과테말라 안티구아';
+drop table product;
+
 create table product (
  product_code char(8) primary key, -- P2023-01
  product_name varchar2(100) not null,
@@ -145,5 +148,7 @@ insert into product values('P2023-04', '에티오피아 예가체프', '예가체프.', 4000,
 insert into product values('P2023-05', '케냐 오크라톡신', '오크라톡신.', 4500, 3000, 0, '케냐 오크라톡신.jpg');
 insert into product values('P2023-06', '코스타리카 따라주', '따라주.', 3000, 2500, 0, '코스타리카 따라주.jpg');
 
-delete from product where product_name like '과테말라 안티구아';
-drop table product;
+select product_code, product_name, product_desc, to_char(origin_price, '9,999'), to_char(sale_price, '9,999'), like_it, image
+from product order by 1;
+
+select * from product where product_code = 'P2023-02';
