@@ -152,3 +152,63 @@ select product_code, product_name, product_desc, to_char(origin_price, '9,999'),
 from product order by 1;
 
 select * from product where product_code = 'P2023-02';
+
+
+--´ñ±Û(´ñ±Û¹øÈ£, °Ô½Ã±Û¹øÈ£, ³»¿ë, ÀÛ¼ºÀÚ, ÀÛ¼ºÀÏ½Ã)
+drop table reply;
+create table reply(
+reply_no number primary key,
+board_no number not null,
+reply varchar2(100) not null,
+replyer varchar2(30) not null,
+reply_date date default sysdate
+);
+
+create sequence reply_seq;
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 1, 'ÇÏÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 1, 'ÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 1, 'ÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 2, 'ÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 2, 'ÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 2, 'ÇÏÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 3, 'ÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 3, 'ÇÏÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+insert into reply (reply_no, board_no, reply, replyer, reply_date)
+values(reply_seq.nextval, 3, 'ÇÏÇÏÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+
+select * from reply;
+
+select r.*, m.name
+from reply r
+join member m
+on r.replyer = m.id
+where board_no = 3
+order by 1;
+
+-- ´ñ±Û ÆäÀÌÂ¡.
+select b.* from
+(select rownum rn, a.* from
+(select r.*, m.name
+    from reply r
+    join member m
+    on r.replyer = m.id
+    where board_no = 3
+    order by 1
+    ) a ) b
+where b.rn > (1-1)*5 and b.rn <= 1*5;
