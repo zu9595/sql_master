@@ -122,6 +122,7 @@ insert into member values('user1', '1111', 'È«±æµ¿', 'User');
 insert into member values('user2', '2222', '±èÃ¶¼ö', 'User');
 insert into member values('user3', '3333', '°ü¸®ÀÚ', 'Admin');
 insert into member values('user4', '4444', 'ÃÖ½Â¹Î', 'User');
+insert into member values('user5', '5555', '¾ÈÃ¶¼ö', 'User');
 commit;
 delete board;
 delete sequence board_seq;
@@ -184,14 +185,16 @@ insert into reply (reply_no, board_no, reply, replyer, reply_date)
 values(reply_seq.nextval, 2, 'ÇÏÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
 
 insert into reply (reply_no, board_no, reply, replyer, reply_date)
-values(reply_seq.nextval, 3, 'ÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+values(reply_seq.nextval, 3, 'ÇÏÇÏ', 'user1', to_date(sysdate, 'YY-MM-DD'));
 
 insert into reply (reply_no, board_no, reply, replyer, reply_date)
-values(reply_seq.nextval, 3, 'ÇÏÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+values(reply_seq.nextval, 3, 'ÇÏÇÏÇÏ', 'user3', to_date(sysdate, 'YY-MM-DD'));
 
 insert into reply (reply_no, board_no, reply, replyer, reply_date)
-values(reply_seq.nextval, 3, 'ÇÏÇÏÇÏÇÏ', 'È«±æµ¿', to_date(sysdate, 'YY-MM-DD'));
+values(reply_seq.nextval, 4, 'ÇÏÇÏÇÏÇÏ', 'user4', to_date(sysdate, 'YY-MM-DD'));
 
+delete from reply
+where replyer = 'È«±æµ¿';
 select * from reply;
 
 select r.*, m.name
@@ -212,3 +215,23 @@ select b.* from
     order by 1
     ) a ) b
 where b.rn > (1-1)*5 and b.rn <= 1*5;
+
+--240108
+select * from reply;
+select * from reply
+where board_no = 3
+order by 1;
+
+insert into reply
+select reply_seq.nextval, 3, 'test', 'user1', sysdate
+from reply;
+
+select replyer, count(*)
+from reply
+group by replyer;
+
+select name, count(*)
+from reply r
+join member m
+on r.replyer = m.id
+group by name;
