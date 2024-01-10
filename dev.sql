@@ -109,7 +109,10 @@ values(board_seq.nextval, '우리반 화이팅', '최승민', '이거 왜 안돼지');
 
 select * from board order by 1;
 
-select * from member;
+select * from member
+order by 1;
+alter table member add image varchar2(100);
+
 drop table member;
 
 create table member(
@@ -235,3 +238,15 @@ from reply r
 join member m
 on r.replyer = m.id
 group by name;
+
+--240110 시험--
+create table books (
+ book_code varchar2(10) primary key,
+ book_name varchar2(100) not null,
+ book_author varchar2(100) not null,
+ book_press varchar2(100) not null,
+ book_price number not null
+);
+
+insert into books
+values('p00000006', '파피용', '누구', '신흥출판사', 25000);
