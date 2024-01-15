@@ -15,8 +15,3 @@ create user dev
 identified by dev
 default tablespace users
 temporary tablespace temp;
-
-----------------------------------------
-create user mun9test identified by mun9test
-default tablespace users;
-grant connect, resource to mun9test;
