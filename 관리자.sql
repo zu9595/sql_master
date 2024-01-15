@@ -1,27 +1,17 @@
-alter user mun9pjt
-identified by mun9pjt --비밀번호
-default tablespace users
-temporary tablespace temp
+alter user dev
+identified by dev
 account unlock;
 
-create user mun9pjt
-identified by mun9pjt;
+create user dev
+identified by test;
 
 grant create session, create table, create view
-to mun9pjt;
+to dev;
 
 revoke create session, create table, create view
-from mun9pjt;
+from dev;
 
-create user mun9pjt
-identified by mun9pjt
+create user dev
+identified by dev
 default tablespace users
 temporary tablespace temp;
-
-drop user mun9pjt;
-
---------------------------------
-alter user mun9pjt identified by mun9pjt
-default tablespace users;
-
-grant connect, resource to mun9pjt;

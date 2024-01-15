@@ -214,7 +214,7 @@ select b.* from
     from reply r
     join member m
     on r.replyer = m.id
-    where board_no = 1
+    where board_no = 3
     order by 1
     ) a ) b
 where b.rn > (1-1)*5 and b.rn <= 1*5;
