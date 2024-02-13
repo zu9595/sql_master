@@ -53,9 +53,9 @@ select e.empid,
                         from employee
                         where empid = 20121729);
 --14
-grant create view to hr;
+grant create view to hr; -- 뷰 생성 권한 부여
 
-create or replace view emp_vu
+create or replace view emp_vu -- or replace : drop없이 즉시 수정
 as
     select e.empname,
             e.addr,
