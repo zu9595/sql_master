@@ -367,14 +367,36 @@ end;
 */
 
 declare
-    v_stars varchar2(5):= '';
+    v_stars varchar2(10);
     v_idx number(38,0) := 0;
 begin
     loop
         v_idx := v_idx + 1;
-        v_stars := v_stars + to_char('*');
+        v_stars := v_stars || '*';
         DBMS_OUTPUT.PUT_LINE(v_stars);
         exit when v_idx >= 5;
+    end loop;
+end;
+/
+
+declare
+    v_idx number(38,0) := 0;
+    v_stars varchar2(10);
+begin
+    while v_idx < 5 loop
+        v_idx := v_idx + 1;
+        v_stars := v_stars || '*';
+        DBMS_OUTPUT.PUT_LINE(v_stars);
+    end loop;
+end;
+/
+
+declare
+    v_stars varchar2(10);
+begin
+    for i in 1..5 loop
+        v_stars := v_stars || '*';
+        DBMS_OUTPUT.PUT_LINE(v_stars);
     end loop;
 end;
 /
