@@ -368,7 +368,7 @@ end;
 
 declare
     v_stars varchar2(5):= '';
-    v_idx number(1,0) := 0;
+    v_idx number(38,0) := 0;
 begin
     loop
         v_idx := v_idx + 1;
