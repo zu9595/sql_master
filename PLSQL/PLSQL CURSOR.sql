@@ -151,3 +151,207 @@ BEGIN
     close emp_cursor;
 END;
 /
+
+-- 커서 FOR LOOP
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT employee_id, last_name
+        FROM employees
+        WHERE employee_id = 0;
+BEGIN
+    FOR emp_record IN emp_cursor LOOP
+        DBMS_OUTPUT.PUT('NO. ' || emp_cursor%ROWCOUNT);
+        DBMS_OUTPUT.PUT(', 사원번호 : ' || emp_record.employee_id);
+        DBMS_OUTPUT.PUT_line(', 사원이름 : ' || emp_record.last_name);
+    END LOOP; -- CLOSE;
+    -- DBMS_OUTPUT.PUT_line('Total : ' || emp_cursor%ROWCOUNT);
+    
+    FOR dept_info IN (SELECT * FROM departments) LOOP
+        DBMS_OUTPUT.PUT_line(', 부서번호 : ' || dept_info.department_id);
+        DBMS_OUTPUT.PUT_line(', 사원이름 : ' || dept_info);
+    END LOOP;
+END;
+/
+-- 1) 모든 사원의 사원번호, 이름, 부서이름 출력
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT employee_id, last_name, department_name
+        from employees e
+        left outer join departments d
+        on(e.department_id = d.department_id);
+BEGIN
+    FOR emp_record IN emp_cursor LOOP
+        DBMS_OUTPUT.PUT(emp_record.employee_id || ', ');
+        DBMS_OUTPUT.PUT(emp_record.last_name || ', ');
+        DBMS_OUTPUT.PUT_LINE(emp_record.department_name);
+    END LOOP;
+END;
+/
+-- 2) 부서번호가 50이거나 80인 사원들의 사원이름, 급여, 연봉 출력
+DECLARE
+    CURSOR einfo_cursor IS
+        SELECT last_name, salary, (salary*12) + (nvl(salary, 0) * nvl(commission_pct, 0) * 12) as ysal
+        FROM employees
+        WHERE department_id IN(50, 80);
+BEGIN
+    FOR einfo_record IN einfo_cursor LOOP
+        DBMS_OUTPUT.PUT(einfo_record.last_name || ', ');
+        DBMS_OUTPUT.PUT(einfo_record.salary || ', ');
+        DBMS_OUTPUT.PUT_LINE(einfo_record.ysal);
+    END LOOP;
+END;
+/
+
+-- 매개변수
+DECLARE
+    CURSOR emp_cursor(p_mgr employees.manager_id%TYPE)IS
+        SELECT employee_id, last_name
+        FROM employees
+        WHERE manager_id = p_mgr;
+        
+    v_emp_info emp_cursor%ROWTYPE;
+BEGIN
+    -- 기본
+    OPEN emp_cursor(100);
+    
+    LOOP
+        FETCH emp_cursor INTO v_emp_info;
+        EXIT WHEN emp_cursor%NOTFOUND;
+        
+        DBMS_OUTPUT.PUT(v_emp_info.employee_id || ', ');
+        DBMS_OUTPUT.PUT_LINE(v_emp_info.last_name);
+    END LOOP;
+    
+    CLOSE emp_cursor;
+    
+    -- 커서 FOR LOOP
+    FOR emp_info IN emp_cursor(149) LOOP
+        DBMS_OUTPUT.PUT(emp_info.employee_id || ', ');
+        DBMS_OUTPUT.PUT_LINE(emp_info.last_name);
+    END LOOP;
+END;
+/
+
+/*
+1.
+사원(employees) 테이블에서
+사원의 사원번호, 사원이름, 입사연도를
+다음 기준에 맞게 각각 test01, test02에 입력하시오.
+입사년도가 2015년(포함) 이전 입사한 사원은 test01 테이블에 입력
+입사년도가 2015년 이후 입사한 사원은 test02 테이블에 입력
+*/
+CREATE TABLE test01
+AS
+    SELECT employee_id, first_name, hire_date
+    FROM employees
+    WHERE employee_id = 0;
+    
+CREATE TABLE test02
+AS
+    SELECT employee_id, first_name, hire_date
+    FROM employees
+    WHERE employee_id = 0;
+
+-- 1
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT employee_id, first_name, hire_date
+        from employees;
+    
+    emp_record emp_cursor%ROWTYPE;
+BEGIN
+    OPEN emp_cursor;
+    
+    LOOP
+        FETCH emp_cursor INTO emp_record;
+        EXIT WHEN emp_cursor%NOTFOUND;
+        --커서가 가리키는 한 행을 바탕으로 실행하는 부분
+        IF TO_CHAR(emp_record.hire_date, 'yyyy') <= '2015' THEN
+            INSERT INTO test01(employee_id, first_name, hire_date)
+            VALUES(emp_record.employee_id, emp_record.first_name, emp_record.hire_date);
+        ELSE
+            INSERT INTO test02(employee_id, first_name, hire_date)
+            VALUES(emp_record.employee_id, emp_record.first_name, emp_record.hire_date);
+        END IF;
+    END LOOP;
+    CLOSE emp_cursor;
+END;
+/
+
+-- 2
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT employee_id, first_name, hire_date
+        from employees;
+BEGIN
+    FOR emp_record IN emp_cursor LOOP
+        IF TO_CHAR(emp_record.hire_date, 'yyyy') <= '2015' THEN
+            INSERT INTO test01(employee_id, first_name, hire_date)
+            VALUES(emp_record.employee_id, emp_record.first_name, emp_record.hire_date);
+        ELSE
+            INSERT INTO test02(employee_id, first_name, hire_date)
+            VALUES(emp_record.employee_id, emp_record.first_name, emp_record.hire_date);
+        END IF;
+    END LOOP;
+END;
+/
+
+/*
+2.
+부서번호를 입력할 경우(&치환변수 사용)
+해당하는 부서의 사원이름, 입사일자, 부서명을 출력하시오.
+(단, cursor 사용)
+*/
+
+DECLARE
+    CURSOR emp_cursor IS
+        SELECT last_name, hire_date, department_name
+        from employees e
+        left outer join departments d
+        on(e.department_id = d.department_id)
+        where d.department_id = &부서번호;
+BEGIN
+    FOR emp_record IN emp_cursor LOOP
+        DBMS_OUTPUT.PUT(emp_record.last_name || ', ');
+        DBMS_OUTPUT.PUT(emp_record.hire_date || ', ');
+        DBMS_OUTPUT.PUT_LINE(emp_record.department_name);
+    END LOOP;
+END;
+/
+
+DECLARE
+    CURSOR dept_cursor IS
+        SELECT *
+        FROM departments;
+        
+    CURSOR emp_cursor(p_dept_id departments.department_id%TYPE)IS
+        SELECT last_name, hire_date, department_name
+        from employees e
+        left outer join departments d
+        on(e.department_id = d.department_id)
+        where d.department_id = p_dept_id;
+        
+    v_einfo emp_cursor%ROWTYPE;
+BEGIN
+    FOR dept_info IN dept_cursor LOOP
+    DBMS_OUTPUT.PUT_LINE('====== 현재 부서 정보 : ' || dept_info.department_name);
+    
+    OPEN emp_cursor(dept_info.department_id);
+    
+    LOOP
+        FETCH emp_cursor INTO v_einfo;
+        EXIT WHEN emp_cursor%NOTFOUND;
+        
+        DBMS_OUTPUT.PUT(v_einfo.last_name || ', ');
+        DBMS_OUTPUT.PUT(v_einfo.hire_date || ', ');
+        DBMS_OUTPUT.PUT_LINE(v_einfo.department_name);
+    END LOOP;
+    
+    IF emp_cursor%ROWCOUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('현재 소속된 사원이 없습니다.');
+    END IF;
+    
+    CLOSE emp_cursor;
+    END LOOP;
+END;
+/
