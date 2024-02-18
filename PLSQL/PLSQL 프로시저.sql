@@ -1,3 +1,5 @@
+SET SERVEROUTPUT ON;
+
 -- PROCEDURE : 프로시저 쪽에 등록, 수정불가(DROP이나 OR REPLACE 사용)
 CREATE PROCEDURE test_pro
 IS
@@ -30,6 +32,7 @@ CREATE PROCEDURE raise_salary
 IS
 
 BEGIN
+    -- p_eid := 100; -- 상수이기 때문에 값을 변경할 수 없음.
     UPDATE employees
     SET salary = salary * 1.1
     WHERE employee_id = p_eid;
@@ -49,7 +52,7 @@ END;
 SELECT employee_id, salary
 from employees;
 
--- OUT : PROCEDURE 내부에서 초기화되지 않은 변수
+-- OUT : PROCEDURE 바깥에서 인수를 받지 않고 PROCEDURE내부(begin)에서 변수값을 지정. 초기값이 없어도 됨.
 CREATE PROCEDURE test_p_out
 (p_num IN NUMBER,
  p_result OUT NUMBER)
@@ -68,7 +71,7 @@ DECLARE
     v_result NUMBER(4,0) := 1234;
 BEGIN
     DBMS_OUTPUT.PUT_LINE('1) result : ' || v_result);
-    test_p_out(1000, v_result);
+    test_p_out(1000, v_result); -- v_result를 받지 못함.
     DBMS_OUTPUT.PUT_LINE('2) result : ' || v_result);
 END;
 /
@@ -104,7 +107,7 @@ begin
 end;
 /
 
--- IN OUT 매개변수
+-- IN OUT :  바깥에서 변수에 들어갈 값을 받고 내부코드를 적용 후 다시 반환하기 위해 사용
 -- '01012341234' => '010-1234-1234'
 CREATE PROCEDURE format_phone
 (p_phone_no in out varchar2)
@@ -133,14 +136,15 @@ create table var_pk_tbl
 );
 select no, name
 from var_pk_tbl;
-'TEMP240215001' -- TEMP + yyMMdd + 숫자(3자리)
+
 
 SELECT NVL(MAX(employee_id),0) + 1
 from employees;
 
+-- 'TEMP240215001' -- TEMP + yyMMdd + 숫자(3자리)
 select 'TEMP' || to_char(240215, 'yyMMdd') || lpad(nvl(max(substr(no, -3)),0) +1,3,'0')
 from var_pk_tbl;
---where substr(no, 5, 6) = to_char(240215, 'yyMMdd')
+--where substr(no, 5, 6) = to_char(SYSDATE, 'yyMMdd')
 
 /*
 1.
@@ -152,7 +156,6 @@ EXECUTE yedam_ju(1511013689977)
 
   -> 950101-1******
 */
-
 create or replace procedure yedam_ju
 (p_num in varchar2)
 is
@@ -167,6 +170,10 @@ END;
 EXECUTE yedam_ju(9501011667777);
 EXECUTE yedam_ju(1511013687777);
 
+
+
+
+
 /*
 2.
 사원번호를 입력할 경우
@@ -174,6 +181,29 @@ EXECUTE yedam_ju(1511013687777);
 단, 해당사원이 없는 경우 "해당사원이 없습니다." 출력
 예) EXECUTE TEST_PRO(176)
 */
+CREATE TABLE test_employees
+AS
+    SELECT *
+FROM employees;
+
+create or replace procedure TEST_PRO
+(p_eid in test_employees.employee_id%type)
+is
+
+begin
+    delete test_employees
+    where employee_id = p_eid;
+    
+    if sql%rowcount = 0 then
+    dbms_output.put_line('해당사원이 없습니다.');
+    end if;
+end;
+/
+EXECUTE TEST_PRO(176);
+
+
+
+
 
 /*
 3.
@@ -184,6 +214,24 @@ EXECUTE yedam_ju(1511013687777);
 실행) EXECUTE yedam_emp(176)
 실행결과) TAYLOR -> T*****  <- 이름 크기만큼 별표(*) 출력
 */
+create or replace procedure yedam_emp
+(p_eid in employees.employee_id%type)
+is
+    v_ename varchar2(100);
+begin
+    select last_name
+    into v_ename
+    from employees
+    where employee_id = p_eid;
+    
+    DBMS_OUTPUT.PUT_LINE(rpad(substr(v_ename, 1, 1), length(v_ename), '*'));
+end;
+/
+EXECUTE yedam_emp(176);
+
+
+
+
 
 /*
 4.
@@ -193,6 +241,35 @@ EXECUTE yedam_ju(1511013687777);
 단, 사원이 없을 경우 "해당 부서에는 사원이 없습니다."라고 출력(exception 사용)
 실행) EXECUTE get_emp(30)
 */
+create or replace procedure get_emp
+(p_did in employees.department_id%type)
+is
+    cursor emp_cursor is
+        select employee_id, last_name
+        from employees
+        where department_id = p_did;
+        
+    e_rowcheck exception;
+begin
+    for record in emp_cursor loop
+        dbms_output.put(record.employee_id || ', ');
+        DBMS_OUTPUT.PUT_LINE(record.last_name);
+
+    
+        IF emp_cursor%ROWCOUNT = 0 THEN
+            RAISE e_rowcheck;
+        END IF;
+    end loop;
+exception
+    when e_rowcheck then
+        DBMS_OUTPUT.PUT_LINE('해당 부서에는 사원이 없습니다.');
+end;
+/
+EXECUTE get_emp(30);
+
+
+
+
 
 /*
 5.
@@ -200,3 +277,25 @@ EXECUTE yedam_ju(1511013687777);
 만약 입력한 사원이 없는 경우에는 ‘No search employee!!’라는 메시지를 출력하세요.(예외처리)
 실행) EXECUTE y_update(200, 10)
 */
+create or replace procedure y_update
+(p_eid in employees.employee_id%type,
+ p_comm in employees.commission_pct%type)
+is
+    e_rowcheck exception;
+begin
+    update employees
+    set salary = salary * (1 + (p_comm/100))
+    where employee_id = p_eid;
+    
+    IF sql%ROWCOUNT = 0 THEN
+            RAISE e_rowcheck;
+    END IF;
+exception
+    when e_rowcheck then
+        DBMS_OUTPUT.PUT_LINE('No search employee!!');
+end;
+/
+EXECUTE y_update(200, 10);
+select salary, employee_id
+from employees
+where employee_id = 200;
